@@ -16,7 +16,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static List<Widget> _widgetOptions = <Widget>[
     RandomNumberGeneratorScreen(),
     DashboardScreen(),
-    DotGameScreen(),
+    AnalogClock(),
   ];
 
   void _onItemTapped(int index) {

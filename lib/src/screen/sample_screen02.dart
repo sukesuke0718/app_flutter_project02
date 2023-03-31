@@ -1,42 +1,111 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-class DotGameScreen extends StatelessWidget {
+class AnalogClock extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Dot Game'),
-      ),
-      body: Center(
-        child: Container(
-          width: 300,
-          height: 300,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
-          ),
-          child: Stack(
-            children: [
-              _buildDot(50, 50),
-              _buildDot(100, 100),
-              _buildDot(200, 200),
-              _buildDot(250, 250),
-            ],
-          ),
-        ),
-      ),
-    );
+  _AnalogClockState createState() => _AnalogClockState();
+}
+
+class _AnalogClockState extends State<AnalogClock> {
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      setState(() {});
+    });
   }
 
-  Widget _buildDot(double x, double y) {
-    return Positioned(
-      left: x,
-      top: y,
-      child: Container(
-        width: 10,
-        height: 10,
-        decoration: BoxDecoration(
-          color: Colors.blue,
-          shape: BoxShape.circle,
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    DateTime now = DateTime.now();
+    double angleSeconds = (now.second / 60) * 2 * pi;
+    double angleMinutes = (now.minute / 60) * 2 * pi;
+    double angleHours =
+        ((now.hour % 12 + now.minute / 60) / 12) * 2 * pi;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Analog Clock'),
+      ),
+      body: Center(
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 4,
+                  offset: Offset(2, 2),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                Center(
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Transform.rotate(
+                    angle: angleSeconds,
+                    child: Container(
+                      width: 2,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Transform.rotate(
+                    angle: angleMinutes,
+                    child: Container(
+                      width: 4,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Transform.rotate(
+                    angle: angleHours,
+                    child: Container(
+                      width: 6,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
